@@ -10,7 +10,7 @@
 using namespace std;
 
 // Function to check if a user exists in the system and return the user ID
-int userExists(const string& username, const string& password) {
+int userExists(string username, string password) {
     ifstream userFile("users.txt");
     string line;
     while (getline(userFile, line)) {
@@ -32,8 +32,9 @@ int userExists(const string& username, const string& password) {
 }
 
 // Function to update watched movies for a user
-void updateWatchedMovies(int userId, const string& movieName) {
-    string filename = "watched_" + to_string(userId) + ".txt";
+void updateWatchedMovies(int userId, string movieName) {
+    string folderPath = "userData/";
+    string filename = folderPath + "watched_" + to_string(userId) + ".txt";
     ofstream watchedFile(filename, ios::app);
     if (watchedFile.is_open()) {
         watchedFile << movieName << "\n";
@@ -46,7 +47,8 @@ void updateWatchedMovies(int userId, const string& movieName) {
 // Function to retrieve watched movies for a user
 vector<string> getWatchedMovies(int userId) {
     vector<string> watchedMovies;
-    string filename = "watched_" + to_string(userId) + ".txt";
+    string folderPath = "userData/";
+    string filename = folderPath + "watched_" + to_string(userId) + ".txt";
     ifstream watchedFile(filename);
     string movie;
     while (getline(watchedFile, movie)) {
@@ -56,6 +58,7 @@ vector<string> getWatchedMovies(int userId) {
     return watchedMovies;
 }
 
+// Function to check the Uniqueness of new Username
 bool checkUnique(string usernameCheck){
     ifstream userFile("users.txt");
     string line;
@@ -70,21 +73,39 @@ bool checkUnique(string usernameCheck){
 }
 
 // Function to create a new user
-void createUser(const string& username, const string& password, int userId) {
+bool createUser(string username, string password, int userId) {
     ofstream userFile("users.txt", ios::app);
     if (userFile.is_open()) {
         if(checkUnique(username)){
             userFile << username << "," << password << "," << userId << "\n";
             userFile.close();
-            cout<<"User Created Successfully...";
+            return true;
         }
         else{
-            cout<<"User already Exist....";
+            return false;
         }  
     } else {
         cerr << "Error: Unable to create or open users file.\n";
     }
 }
 
+// Function to get last UserID
+int getLastID(){
+    string userIdStr = "0";
+    ifstream userFile("users.txt");
+    string line;
+    while (getline(userFile, line)) {
+        size_t pos1 = line.find(',');
+        size_t pos2 = line.find(',', pos1 + 1);  // Find the second comma after the username
+        if (pos1 == string::npos || pos2 == string::npos) {
+            continue;  // Skip lines that don't have the correct format
+        }
+        string storedUsername = line.substr(0, pos1);
+        string storedPassword = line.substr(pos1 + 1, pos2 - pos1 - 1);  // Extract password between commas
+        userIdStr = line.substr(pos2 + 1);  // Extract user ID after the second comma
+    }
+
+    return stoi(userIdStr);
+}
 
 #endif
