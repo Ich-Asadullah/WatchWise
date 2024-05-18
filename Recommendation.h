@@ -8,8 +8,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "MoviesData.h"
-
 using namespace std;
 
 class RecommendationGraph {
@@ -42,11 +40,11 @@ public:
     }
 
     //Function to get recommendations based on Specific logic
-    vector<MovieNode*> getRecommendation(vector<int> movies, LinkedList* listt) {
-        unordered_set<MovieNode*> recommendations;
-        for (int id : movies)
+    vector<TreeNode*> getRecommendation(vector<string> movies, LinkedList* listt) {
+        unordered_set<TreeNode*> recommendations;
+        for (string name : movies)
             {   
-                MovieNode* movie = listt->searchMovie(id);
+                MovieNode* movie = listt->search_by_name(name);
                 if (movie == nullptr) continue; // If we cannot find the movie then leave it.
                 double weight = 0;
                 MovieNode* curr = listt->head;
@@ -63,10 +61,13 @@ public:
                     }
 
                     if(weight>4){
-                        recommendations.insert(curr);
+                        TreeNode* newTree = new TreeNode(curr,weight);
+                        recommendations.insert(newTree);
                     }
-            }}
-        return vector<MovieNode*>(recommendations.begin(), recommendations.end());
+                    curr = curr->next;
+                }
+            }
+        return vector<TreeNode*>(recommendations.begin(), recommendations.end());
     }
 
 };
