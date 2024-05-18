@@ -31,33 +31,6 @@ int userExists(string username, string password) {
     return -1;  // Return -1 if user not found
 }
 
-// Function to update watched movies for a user
-void updateWatchedMovies(int userId, string movieName) {
-    string folderPath = "userData/";
-    string filename = folderPath + "watched_" + to_string(userId) + ".txt";
-    ofstream watchedFile(filename, ios::app);
-    if (watchedFile.is_open()) {
-        watchedFile << movieName << "\n";
-        watchedFile.close();
-    } else {
-        cerr << "Error: Unable to open file " << filename << " for writing.\n";
-    }
-}
-
-// Function to retrieve watched movies for a user
-vector<string> getWatchedMovies(int userId) {
-    vector<string> watchedMovies;
-    string folderPath = "userData/";
-    string filename = folderPath + "watched_" + to_string(userId) + ".txt";
-    ifstream watchedFile(filename);
-    string movie;
-    while (getline(watchedFile, movie)) {
-        watchedMovies.push_back(movie);
-    }
-    watchedFile.close();
-    return watchedMovies;
-}
-
 // Function to check the Uniqueness of new Username
 bool checkUnique(string usernameCheck){
     ifstream userFile("users.txt");
