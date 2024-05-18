@@ -4,8 +4,7 @@
 #include <iostream>
 #include <string>
 #include <stack>
-
-#include "MoviesData.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -24,6 +23,8 @@ public:
     
     //Function to add reviews for a movie
     void addReview(string review, int userId) {
+        // Update the stach by retrieving reviews from file
+        updateStack(retrieveReviews(userId));
         reviews.push(review);
         saveReviewToFile(review, userId);
     }
@@ -43,7 +44,7 @@ public:
     // Function to write reviews to reviews file
     void saveReviewToFile(string review, int userId) {
         string filename = "userReviews/User_" + to_string(userId) + ".txt";
-        ofstream reviewFile(filename, ios::app);
+        ofstream reviewFile(filename, ios::trunc);
         if (reviewFile.is_open()) {
             reviewFile << review << "\n";
             reviewFile.close();
@@ -81,6 +82,53 @@ public:
         this->userId = id;
         this->username = n;
     }
+
+    // Function to retrieve watched movies for a user
+    vector<string> getWatchedMovies(int userId) {
+        vector<string> watchedMovies;
+        string folderPath = "userData/";
+        string filename = folderPath + "watched_" + to_string(userId) + ".txt";
+        ifstream watchedFile(filename);
+        string movie;
+        while (getline(watchedFile, movie)) {
+            watchedMovies.push_back(movie);
+        }
+        watchedFile.close();
+        return watchedMovies;
+    }
+
+    // Function to update watched movies for a user
+    void updateWatchedMovies(int userId, string movieName) {
+        string folderPath = "userData/";
+        string filename = folderPath + "watched_" + to_string(userId) + ".txt";
+        ofstream watchedFile(filename, ios::app);
+        if (watchedFile.is_open()) {
+            watchedFile << movieName << "\n";
+            watchedFile.close();
+        } else {
+            cerr << "Error: Unable to open file " << filename << " for writing.\n";
+        }
+    }
+
+    // Function to remove a movie from watched
+    void removeWatched(string movieName, int userID) {
+        vector<string> watched = getWatchedMovies(userID);
+        // Remove the movie from the vector
+        watched.erase(remove(watched.begin(), watched.end(), movieName), watched.end());
+        string folderPath = "userData/";
+        string filename = folderPath + "watched_" + to_string(userID) + ".txt";
+        ofstream watchedFile(filename, ios::trunc);
+        if (watchedFile.is_open()) {
+            // Write the updated list back to the file
+            for (string movie : watched) {
+                watchedFile << movie << "\n";
+            }
+            watchedFile.close();
+        } else {
+            cerr << "Error: Unable to open file " << filename << " for writing.\n";
+        }
+    }
+
 };
 
 #endif
