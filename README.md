@@ -65,7 +65,7 @@ WatchWise Movie System is a console-based application that simulates a movie str
 
 1. **Compile the Code**:
     ```bash
-    g++ -o WatchWise main.cpp MoviesSystem.cpp User.cpp
+    g++ main.cpp -o WatchWise
     ```
 2. **Run the Program**:
     ```bash
