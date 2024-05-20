@@ -77,14 +77,14 @@ void handleWatchMovie(MovieSystem* NexFlix, User* user, LinkedList* moviesList) 
 
 void handleTrending(LinkedList* moviesList) {
     cout << "\nTop 10 Trending Movies\n";
-    LinkedList* trending = moviesList->sort_by_rating();
+    LinkedList* trending = moviesList->sort_by_votes();
     trending->printLimited(10);
     delete trending;
 }
 
 void handleTopRated(LinkedList* moviesList) {
     cout << "\nTop Rated Movies\n";
-    LinkedList* topRated = moviesList->sort_by_votes();
+    LinkedList* topRated = moviesList->sort_by_rating();
     topRated->printLimited(10);
     delete topRated;
 }
