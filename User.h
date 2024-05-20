@@ -108,24 +108,26 @@ public:
     }
 
     // Function to update watched movies for a user
-    void updateWatchedMovies(int userId, string movieName) {
+    void updateWatchedMovies(int userId, const string& movieName) {
         vector<string> watched = getWatchedMovies(userId);
-        if(checkUniqueMovie(watched,movieName)){
+        
+        if (checkUniqueMovie(watched, movieName)) {
             watched.push_back(movieName);
-        }
-        else{
+        } else {
             return;
         }
+    
         string folderPath = "WatchHistory/";
         string filename = folderPath + "User_" + to_string(userId) + ".txt";
         ofstream watchedFile(filename, ios::trunc);
-        for (string movie : watched){
-            if (watchedFile.is_open()) {
-            watchedFile << movieName << "\n";
-            watchedFile.close();
-            } else {
-                cerr << "Error: Unable to open file " << filename << " for writing.\n";
+    
+        if (watchedFile.is_open()) {
+            for (const string& movie : watched) {
+                watchedFile << movie << "\n";
             }
+            watchedFile.close();
+        } else {
+            cerr << "Error: Unable to open file " << filename << " for writing.\n";
         }
     }
 
