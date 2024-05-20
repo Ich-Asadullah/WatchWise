@@ -1,7 +1,6 @@
 #ifndef USERLOGIN_H
 #define USERLOGIN_H
 
-
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -46,20 +45,39 @@ bool checkUnique(string usernameCheck){
     return true;
 }
 
-// Function to create a new user
+//Function to Create User
 bool createUser(string username, string password, int userId) {
     ofstream userFile("users.txt", ios::app);
     if (userFile.is_open()) {
-        if(checkUnique(username)){
+        if (checkUnique(username)) {
             userFile << username << "," << password << "," << userId << "\n";
             userFile.close();
+            // Create watch history file
+            ofstream watchHistoryFile("WatchHistory/User_" + to_string(userId) + ".txt");
+            if (watchHistoryFile.is_open()) {
+                watchHistoryFile.close();
+            } else {
+                cerr << "Error: Unable to create watch history file.\n";
+                return false;
+            }
+            // Create user reviews file
+            ofstream userReviewsFile("UserReviews/User_" + to_string(userId) + ".txt");
+            if (userReviewsFile.is_open()) {
+                userReviewsFile.close();
+            } else {
+                cerr << "Error: Unable to create user reviews file.\n";
+                return false;
+            }
+
             return true;
-        }
-        else{
+        } else {
+            cerr << "Error: Username is not unique.\n";
+            userFile.close();
             return false;
-        }  
+        }
     } else {
         cerr << "Error: Unable to create or open users file.\n";
+        return false;
     }
 }
 
