@@ -43,7 +43,7 @@ public:
 
     // Function to write reviews to reviews file
     void saveReviewToFile(string review, int userId) {
-        string filename = "userReviews/User_" + to_string(userId) + ".txt";
+        string filename = "UserReviews/User_" + to_string(userId) + ".txt";
         ofstream reviewFile(filename, ios::trunc);
         if (reviewFile.is_open()) {
             reviewFile << review << "\n";
@@ -56,7 +56,7 @@ public:
     // Function to get reviews from reviews file
     vector<string> retrieveReviews(int userId) {
         vector<string> allReviews;
-        string filename = "userReviews/User_" + to_string(userId) + ".txt";
+        string filename = "UserReviews/User_" + to_string(userId) + ".txt";
         ifstream reviewFile(filename);
         if (reviewFile.is_open()) {
             string review;
@@ -86,8 +86,8 @@ public:
     // Function to retrieve watched movies for a user
     vector<string> getWatchedMovies(int userId) {
         vector<string> watchedMovies;
-        string folderPath = "userData/";
-        string filename = folderPath + "watched_" + to_string(userId) + ".txt";
+        string folderPath = "WatchHistory/";
+        string filename = folderPath + "User_" + to_string(userId) + ".txt";
         ifstream watchedFile(filename);
         string movie;
         while (getline(watchedFile, movie)) {
@@ -97,16 +97,35 @@ public:
         return watchedMovies;
     }
 
+    //Function to not repeat movies in watched
+    bool checkUniqueMovie(vector<string> listt, string movie){
+        for (string i : listt){
+            if (i == movie){
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Function to update watched movies for a user
     void updateWatchedMovies(int userId, string movieName) {
-        string folderPath = "userData/";
-        string filename = folderPath + "watched_" + to_string(userId) + ".txt";
-        ofstream watchedFile(filename, ios::app);
-        if (watchedFile.is_open()) {
+        vector<string> watched = getWatchedMovies(userId);
+        if(checkUniqueMovie(watched,movieName)){
+            watched.push_back(movieName);
+        }
+        else{
+            return;
+        }
+        string folderPath = "WatchHistory/";
+        string filename = folderPath + "User_" + to_string(userId) + ".txt";
+        ofstream watchedFile(filename, ios::trunc);
+        for (string movie : watched){
+            if (watchedFile.is_open()) {
             watchedFile << movieName << "\n";
             watchedFile.close();
-        } else {
-            cerr << "Error: Unable to open file " << filename << " for writing.\n";
+            } else {
+                cerr << "Error: Unable to open file " << filename << " for writing.\n";
+            }
         }
     }
 
