@@ -9,11 +9,11 @@ using namespace std;
 class TreeNode {
 public:
     MovieNode* movie;
-    int resemblance;
+    double resemblance; // Changed to double to match with weight in RecommendationGraph
     TreeNode* left;
     TreeNode* right;
 
-    TreeNode(MovieNode* movie, int resemblance){
+    TreeNode(MovieNode* movie, double resemblance) {
         this->movie = movie;
         this->resemblance = resemblance;
         this->left = nullptr;
@@ -54,7 +54,7 @@ private:
 
 public:
     void insert(TreeNode* node) {
-        heap.push_back(node); //Adds element at end
+        heap.push_back(node);
         heapifyUp(heap.size() - 1);
     }
 
@@ -64,18 +64,20 @@ public:
         }
 
         TreeNode* maxNode = heap[0];
-        heap[0] = heap.back(); //replace index 0 with last element
-        heap.pop_back(); //removes last item
-        heapifyDown(0); //maintains heapify property
+        heap[0] = heap.back();
+        heap.pop_back();
+        heapifyDown(0);
 
         return maxNode;
     }
 
     void printHeapByPriority() {
-        TreeNode* temp = extractMax();
-        temp->movie->display();
-        insert(temp);
+        while (!heap.empty()) {
+            TreeNode* temp = extractMax();
+            temp->movie->display();
+            delete temp; // Free the memory of the printed node
+        }
     }
 };
 
-#endif
+#endif // MOVIESTREE_H
