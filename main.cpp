@@ -1,5 +1,6 @@
 #include <iostream>
 #include "MoviesSystem.h"
+#include <climits>
 
 using namespace std;
 
@@ -31,10 +32,19 @@ void displayMainMenu() {
 }
 
 void handleWatchMovie(MovieSystem* NexFlix, User* user, LinkedList* moviesList) {
+    
+    while(true){
     int watchChoice;
     cout << "1- Search by Movie ID\n"
          << "2- Search By Movie Title\n";
     cin >> watchChoice;
+
+      if (cin.fail()) {
+            cin.clear(); // Clear the error flag
+            cin.ignore(INT_MAX, '\n'); // Ignore the invalid input
+            cout << "Invalid input. Please enter a number.\n";
+            continue; // Ask for input again
+        }
 
     MovieNode* watched = nullptr;
     switch (watchChoice) {
@@ -68,6 +78,13 @@ void handleWatchMovie(MovieSystem* NexFlix, User* user, LinkedList* moviesList) 
              << "3- Main Menu\n";
         cin >> afterWatch;
 
+        if (cin.fail()) {
+                cin.clear(); // Clear the error flag
+                cin.ignore(INT_MAX, '\n'); // Ignore the invalid input
+                cout << "Invalid input. Returning to main menu.\n";
+                break;
+            }
+
         switch (afterWatch) {
             case 1: {
                 string reviewInput;
@@ -77,18 +94,19 @@ void handleWatchMovie(MovieSystem* NexFlix, User* user, LinkedList* moviesList) 
                 string review = "Movie ID: " + to_string(watched->movieId) + " Movie Title: " + watched->title + " Review: " + reviewInput;
                 user->reviewStack.addReview(review, user->userId);
                 cout << "Review Added.....\n";
-                break;
+                return;
             }
             case 2:
                 moviesList->removeMovie(watched->movieId);
                 user->removeWatched(watched->title, user->userId);
                 cout << "Movie removed...........\nWe apologize for the inconvenience.....\n";
-                break;
+                return;
             default:
-                break;
+                return;
         }
     } else {
         cout << "Movie not found.\n";
+    }
     }
 }
 
@@ -175,6 +193,13 @@ int main() {
     while (running) {
         displayMainMenu();
         cin >> mainChoice;
+
+          if (cin.fail()) {
+            cin.clear(); // Clear the error flag
+            cin.ignore(INT_MAX, '\n'); // Ignore the invalid input
+            cout << "Invalid input. Please enter a number.\n";
+            continue; // Ask for input again
+        }
 
         switch (mainChoice) {
             case 1:
