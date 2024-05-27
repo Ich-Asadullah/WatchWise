@@ -44,7 +44,7 @@ public:
     // Function to write reviews to reviews file
     void saveReviewToFile(string review, int userId) {
         string filename = "UserReviews/User_" + to_string(userId) + ".txt";
-        ofstream reviewFile(filename, ios::trunc);
+        ofstream reviewFile(filename, ios::app);
         if (reviewFile.is_open()) {
             reviewFile << review << "\n";
             reviewFile.close();
@@ -136,8 +136,8 @@ public:
         vector<string> watched = getWatchedMovies(userID);
         // Remove the movie from the vector
         watched.erase(remove(watched.begin(), watched.end(), movieName), watched.end());
-        string folderPath = "userData/";
-        string filename = folderPath + "watched_" + to_string(userID) + ".txt";
+        string folderPath = "WatchHistory/";
+        string filename = folderPath + "User_" + to_string(userID) + ".txt";
         ofstream watchedFile(filename, ios::trunc);
         if (watchedFile.is_open()) {
             // Write the updated list back to the file
